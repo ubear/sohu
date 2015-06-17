@@ -2,14 +2,17 @@
 #coding=utf8
 try:
     import sys
+    import os
     import time
     import threading
     import Queue
-    import urlparse
     import logging
     import config
     import urllib2
     import redis
+    import datetime
+    import urlparse
+    import httplib
     from bs4 import BeautifulSoup
 except ImportError:
     print >> sys.stderr, """\
@@ -26,55 +29,84 @@ which is:
 
 ### global variables ###
 task_queue = Queue.Queue()
-lock = threading.Lock()
+#lock = threading.Lock()
 
 class Scrapy_url(object):
     global task_queue
 
     # configure/logger
-    def __init__(self, domain="http://m.sohu.com/"):
-        self.domain = domain
-
-
+    def __init__(self, domain=None):
+        if domain:
+            self.domain = domain
+        else:
+            self.domain = config.SITE
+        stffx = urlparse.urlparse(self.domain).netloc
+        filename = datetime.datetime.now().strftime(stffx+":D_%Y-%m-%d_T%H:%M")+'.txt'
+        self.slogger = logging.getLogger(stffx)
+        logging.basicConfig(level=logging.DEBUG,
+                                 format=config.FILE_FMT,
+                                 filename=os.path.join(config.LOG_DIR,filename), #
+                                 filemode='w')
 
     # check queue and put the initial url
     # spawn a pool of threads
     def scrapy(self):
         task_queue.put(self.domain)
-        redis.Redis(connection_pool=config.REDISPOOL).set(self.domain, 1)#防止重复
+        redis.Redis(connection_pool=config.REDIS_POOL).set(self.domain, 1)#防止重复
+        st_time = time.time()
         for i in range(config.THREAD_NUMBER):
             et = Extract_threading(self.process, str(i))
             et.setDaemon(True)
             et.start()
         task_queue.join()
+        print "total time:%s" % (time.time() - st_time)
 
     # extract data from html
     def process(self, url):
-        urls = list()
+        urls = []
         headers = {"User-Agent":'Mozilla 5.10', "Connection":"close"}
         request = urllib2.Request(url, headers=headers)
         try:
             response = urllib2.urlopen(request)
-            status = response.getcode()
-            if status != 200:
-                print "error:Not200"+url+str(status)
-            page = response.read().decode(response.headers['content-type'].split('charset=')[-1])
-            soup = BeautifulSoup(page)
-            for tag in soup.findAll('a', href=True):
-                tag['href'] = urlparse.urljoin(url, tag['href'])
-                urls.append(tag['href'])
+            if self.filter_url(url):
+                page = response.read().decode('utf-8')
+                soup = BeautifulSoup(page)
+                for tag in soup.findAll('a', href=True):
+                    url_item = urlparse.urljoin(self.domain, tag['href'])
+                    urls.append(url_item)
+            else:
+                pass
+        except urllib2.HTTPError, e:
+            #print "HTTPError:"+url
+            self.slogger.error(url+"-HTTPError-"+str(e.code))
+        except urllib2.URLError, e:
+            #print "URLError:"+url
+            self.slogger.error(url+"-URLError-"+str(e.reason))
+        except httplib.HTTPException, e:
+            #print "HTTPException:"+url
+            self.slogger.error("HTTPException")
+        except UnicodeDecodeError,e:
+            self.slogger.error(url+"-UnicodeDecodeError-"+e.message)
+        except Exception:
+            #print "Exception:"+url
+            import traceback
+            self.slogger.error(url+"---"+traceback.format_exc())
+        finally:
             return urls
-        except:
-            print "errror:"+url
-            return None
 
+    def filter_url(self, url):
+        if urlparse.urlparse(url).netloc in config.INCLUDE_DOMAIN:
+            return True
+        else:
+            print url
+            return False
 
 
 class Extract_threading(threading.Thread):
     def __init__(self, task, name):
         threading.Thread.__init__(self)
         self.do_task = task
-        self.redis = redis.Redis(connection_pool=config.REDISPOOL)
+        self.redis = redis.Redis(connection_pool=config.REDIS_POOL)
         print "Threading---"+name+ " is running..."
 
     def run(self):
@@ -82,10 +114,9 @@ class Extract_threading(threading.Thread):
         while True:
             if not task_queue.empty():
                 url = task_queue.get()
-                print url
                 urls = self.do_task(url)
                 if urls:
-                    for item in urls[0:5]:
+                    for item in urls:
                         if not self.redis.exists(item):
                             task_queue.put(item)
                             self.redis.set(url, 1)

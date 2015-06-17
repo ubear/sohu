@@ -8,3 +8,9 @@
 # 结束/数据统计/比如运行了多长时间
 
 import initialize
+from woker import Scrapy_url
+
+if __name__=="__main__":
+    initialize.start()
+    sc = Scrapy_url()
+    sc.scrapy()
