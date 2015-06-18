@@ -91,10 +91,10 @@ class Scrapy_url(object):
                 pass
         except urllib2.HTTPError, e:
             #print "HTTPError:"+url
-            self.slogger.error("HTTPError-"+url+"---"+str(e.code))
+            self.slogger.error("HTTPError-"+str(e.code)+"---"+url)
         except urllib2.URLError, e:
             #print "URLError:"+url
-            self.slogger.error("URLError-"+url+"---"+str(e.reason))
+            self.slogger.error("URLError-"+str(e.code)+"---"+url)
         except httplib.HTTPException, e:
             #print "HTTPException:"+url
             #self.slogger.error("HTTPException"+url)
@@ -145,7 +145,7 @@ class Extract_threading(threading.Thread):
                 task_queue.task_done()
                 with lock:
                     tested_url_num += 1
-                    print "url_num:"+str(tested_url_num)
+                    #print "url_num:"+str(tested_url_num)
 
                 if task_queue.qsize() >= config.QUEUE_CAPACITY:
                     print "Threading---"+self.name+ " is closing..."

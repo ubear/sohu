@@ -30,7 +30,7 @@ REDIS_POOL = redis.ConnectionPool(host="localhost", port=6379, db=0)
 THREAD_NUMBER = 100
 
 ### url_total_num
-URL_TOTAL_NUM = 10000
+URL_TOTAL_NUM = 100000
 
 ### Queue capacity
 QUEUE_CAPACITY = 1000000
