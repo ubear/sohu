@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 #coding=utf8
 
-import sys
 import os
-from config import *
+import sys
+
 from urlparse import urlparse
+
+from config import *
 
 
 def start():
