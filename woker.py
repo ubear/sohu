@@ -1,36 +1,26 @@
 #!/usr/bin/env python
 #coding=utf8
-try:
-    import sys
-    import os
-    import time
-    import threading
-    import Queue
-    import logging
-    import config
-    import urllib2
-    import redis
-    import datetime
-    import urlparse
-    import httplib
-    from bs4 import BeautifulSoup
-except ImportError:
-    print >> sys.stderr, """\
-There was a problem importing one of the Python modules required to run yum.
-The error leading to this problem was:
-%s
-Please install a package which provides this module, or
-verify that the module is installed correctly.
-It's possible that the above module doesn't match the current version of Python,
-which is:
-%s
-""" % (sys.exc_info(), sys.version)
-    sys.exit(1)
+
+import datetime
+import httplib
+import logging
+import Queue
+import time
+import threading
+import urllib2
+import urlparse
+from bs4 import BeautifulSoup
+
+import redis
+
+import config
+
 
 ### global variables ###
 task_queue = Queue.Queue()
 lock = threading.Lock()
 tested_url_num = 0
+
 
 class Scrapy_url(object):
     global task_queue
@@ -46,12 +36,11 @@ class Scrapy_url(object):
         filename = datetime.datetime.now().strftime(prefix+":D_%Y-%m-%d_T%H:%M")+'.txt'
         self.slogger = logging.getLogger(prefix)
         logging.basicConfig(level=logging.DEBUG,
-                                 format=config.FILE_FMT,
-                                 filename="log/"+filename, #os.path.join(config.LOG_DIR,filename),
-                                 filemode='w')
+                            format=config.FILE_FMT,
+                            filename="log/"+filename, #os.path.join(config.LOG_DIR,filename),
+                            filemode='w')
         task_queue.put(self.domain)
         redis.Redis(connection_pool=config.REDIS_POOL).set(self.domain, 1)#防止重复
-
 
     # check queue and put the initial url
     # spawn a pool of threads
@@ -71,7 +60,6 @@ class Scrapy_url(object):
         test_url_num = 0
         task_queue.queue.clear()
 
-
         print "total time:%s" % (time.time() - st_time)
 
     # extract data from html
@@ -90,22 +78,16 @@ class Scrapy_url(object):
             else:
                 pass
         except urllib2.HTTPError, e:
-            #print "HTTPError:"+url
             self.slogger.error("HTTPError-"+str(e.code)+"---"+url)
         except urllib2.URLError, e:
-            #print "URLError:"+url
             self.slogger.error("URLError-"+str(e.code)+"---"+url)
         except httplib.HTTPException, e:
-            #print "HTTPException:"+url
-            #self.slogger.error("HTTPException"+url)
             pass
         except UnicodeDecodeError,e:
-            #self.slogger.warning("UnicodeDecodeError-"+url+"---"+e.message)
             pass
         except UnicodeEncodeError, e:
             self.slogger.warning("UnicodeEncodeError-"+url+"---"+e.message)
         except Exception:
-            #print "Exception:"+url
             import traceback
             self.slogger.error(url+"---"+traceback.format_exc())
         finally:
@@ -115,7 +97,6 @@ class Scrapy_url(object):
         if urlparse.urlparse(url).netloc in config.INCLUDE_DOMAIN:
             return True
         else:
-            print url
             return False
 
 
@@ -145,7 +126,6 @@ class Extract_threading(threading.Thread):
                 task_queue.task_done()
                 with lock:
                     tested_url_num += 1
-                    #print "url_num:"+str(tested_url_num)
 
                 if task_queue.qsize() >= config.QUEUE_CAPACITY:
                     print "Threading---"+self.name+ " is closing..."
@@ -153,6 +133,7 @@ class Extract_threading(threading.Thread):
             else:
                 time.sleep(1)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     sc = Scrapy_url()
     sc.scrapy()
