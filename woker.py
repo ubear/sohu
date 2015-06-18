@@ -45,27 +45,33 @@ class Scrapy_url(object):
         self.slogger = logging.getLogger(stffx)
         logging.basicConfig(level=logging.DEBUG,
                                  format=config.FILE_FMT,
-                                 filename=os.path.join(config.LOG_DIR,filename), #
+                                 filename="log/"+filename, #os.path.join(config.LOG_DIR,filename),
                                  filemode='w')
+        task_queue.put(self.domain)
+        redis.Redis(connection_pool=config.REDIS_POOL).set(self.domain, 1)#防止重复
 
     # check queue and put the initial url
     # spawn a pool of threads
     def scrapy(self):
-        task_queue.put(self.domain)
-        redis.Redis(connection_pool=config.REDIS_POOL).set(self.domain, 1)#防止重复
+        threads = []
         st_time = time.time()
         for i in range(config.THREAD_NUMBER):
             et = Extract_threading(self.process, str(i))
             et.setDaemon(True)
             et.start()
-        task_queue.join()
+            threads.append(et)
+
+        for thread in threads:
+            thread.join()
+
+        #task_queue.join()
         print "total time:%s" % (time.time() - st_time)
 
     # extract data from html
     def process(self, url):
         urls = []
         headers = {"User-Agent":'Mozilla 5.10', "Connection":"close"}
-        request = urllib2.Request(url, headers=headers)
+        request = urllib2.Request(url.encode('utf-8'), headers=headers)
         try:
             response = urllib2.urlopen(request)
             if self.filter_url(url):
@@ -78,15 +84,19 @@ class Scrapy_url(object):
                 pass
         except urllib2.HTTPError, e:
             #print "HTTPError:"+url
-            self.slogger.error(url+"-HTTPError-"+str(e.code))
+            self.slogger.error("HTTPError-"+url+"---"+str(e.code))
         except urllib2.URLError, e:
             #print "URLError:"+url
-            self.slogger.error(url+"-URLError-"+str(e.reason))
+            self.slogger.error("URLError-"+url+"---"+str(e.reason))
         except httplib.HTTPException, e:
             #print "HTTPException:"+url
-            self.slogger.error("HTTPException")
+            #self.slogger.error("HTTPException"+url)
+            pass
         except UnicodeDecodeError,e:
-            self.slogger.error(url+"-UnicodeDecodeError-"+e.message)
+            #self.slogger.warning("UnicodeDecodeError-"+url+"---"+e.message)
+            pass
+        except UnicodeEncodeError, e:
+            self.slogger.warning("UnicodeEncodeError-"+url+"---"+e.message)
         except Exception:
             #print "Exception:"+url
             import traceback
@@ -107,7 +117,8 @@ class Extract_threading(threading.Thread):
         threading.Thread.__init__(self)
         self.do_task = task
         self.redis = redis.Redis(connection_pool=config.REDIS_POOL)
-        print "Threading---"+name+ " is running..."
+        self.name = name
+        print "Threading---"+self.name+ " is running..."
 
     def run(self):
         global task_queue
@@ -123,9 +134,11 @@ class Extract_threading(threading.Thread):
                         else:
                             pass
                 task_queue.task_done()
+                if task_queue.qsize() >= config.QUEUE_CAPACITY:
+                    print "Threading---"+self.name+ " is closing..."
+                    break
             else:
-                print "is empety"
-                time.sleep(10)
+                time.sleep(1)
 
 if __name__=="__main__":
     sc = Scrapy_url()
