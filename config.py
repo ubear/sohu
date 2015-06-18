@@ -27,13 +27,13 @@ FILE_FMT = '%(asctime)s-%(levelname)s-%(message)s'
 REDIS_POOL = redis.ConnectionPool(host="localhost", port=6379, db=0)
 
 ### threading_number
-THREAD_NUMBER = 5
+THREAD_NUMBER = 100
 
 ### url_total_num
 URL_TOTAL_NUM = 100000
 
 ### Queue capacity
-QUEUE_CAPACITY = 1000
+QUEUE_CAPACITY = 100000
 
 
 
