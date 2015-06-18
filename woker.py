@@ -29,10 +29,12 @@ which is:
 
 ### global variables ###
 task_queue = Queue.Queue()
-#lock = threading.Lock()
+lock = threading.Lock()
+tested_url_num = 0
 
 class Scrapy_url(object):
     global task_queue
+    global test_url_num
 
     # configure/logger
     def __init__(self, domain=None):
@@ -40,15 +42,16 @@ class Scrapy_url(object):
             self.domain = domain
         else:
             self.domain = config.SITE
-        stffx = urlparse.urlparse(self.domain).netloc
-        filename = datetime.datetime.now().strftime(stffx+":D_%Y-%m-%d_T%H:%M")+'.txt'
-        self.slogger = logging.getLogger(stffx)
+        prefix = urlparse.urlparse(self.domain).netloc
+        filename = datetime.datetime.now().strftime(prefix+":D_%Y-%m-%d_T%H:%M")+'.txt'
+        self.slogger = logging.getLogger(prefix)
         logging.basicConfig(level=logging.DEBUG,
                                  format=config.FILE_FMT,
                                  filename="log/"+filename, #os.path.join(config.LOG_DIR,filename),
                                  filemode='w')
         task_queue.put(self.domain)
         redis.Redis(connection_pool=config.REDIS_POOL).set(self.domain, 1)#防止重复
+
 
     # check queue and put the initial url
     # spawn a pool of threads
@@ -65,6 +68,10 @@ class Scrapy_url(object):
             thread.join()
 
         #task_queue.join()
+        test_url_num = 0
+        task_queue.queue.clear()
+
+
         print "total time:%s" % (time.time() - st_time)
 
     # extract data from html
@@ -122,7 +129,9 @@ class Extract_threading(threading.Thread):
 
     def run(self):
         global task_queue
-        while True:
+        global lock
+        global tested_url_num
+        while tested_url_num < config.URL_TOTAL_NUM:
             if not task_queue.empty():
                 url = task_queue.get()
                 urls = self.do_task(url)
@@ -134,6 +143,10 @@ class Extract_threading(threading.Thread):
                         else:
                             pass
                 task_queue.task_done()
+                with lock:
+                    tested_url_num += 1
+                    print "url_num:"+str(tested_url_num)
+
                 if task_queue.qsize() >= config.QUEUE_CAPACITY:
                     print "Threading---"+self.name+ " is closing..."
                     break
