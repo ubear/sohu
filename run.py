@@ -10,5 +10,7 @@
 from worker import CheckUrl
 
 if __name__ == "__main__":
-    cu = CheckUrl()
+    cu = CheckUrl("http://www.ifeng.com/")
     cu.process()
+
+    print ")O"

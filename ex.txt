@@ -1,6 +1,0 @@
-except httplib.HTTPException, e:
-            self.debug_logger.error("HTTPException"+url)
-        except UnicodeDecodeError,e:
-            self.debug_logger.error("UnicodeDecodeError-"+url+"---"+e.message)
-        except UnicodeEncodeError, e:
-            self.debug_logger.error("UnicodeEncodeError-"+url+"---"+e.message)

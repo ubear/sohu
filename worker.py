@@ -16,6 +16,8 @@ from bs4 import BeautifulSoup
 # configuration
 import config
 
+JobFlag = {}
+
 
 class CheckUrl(object):
 
@@ -29,6 +31,15 @@ class CheckUrl(object):
         self.url_dict = {}
         self.lock = threading.Lock()
         self.url_logger = self.__set_logger()
+        self.job_flag = self.__set_job_flag()
+
+    # set the class to JobFlag
+    def __set_job_flag(self):
+        prefix = urlparse.urlparse(self.domain).netloc
+        suffix = datetime.now().strftime(config.LOG_FILENAME_FMT)
+        flag = prefix+suffix
+        JobFlag[flag] = 0
+        return flag
 
     # configuration for logger
     def __set_logger(self):
@@ -52,7 +63,7 @@ class CheckUrl(object):
         st_time = time.time()
         for i in range(config.THREAD_NUMBER):
             mt = MetaThreading(self.extract_url, self.url_queue,
-                               self.url_dict, self.lock, str(i))
+                               self.url_dict, self.lock, self.job_flag, str(i))
             mt.setDaemon(True)
             mt.start()
             threads.append(mt)
@@ -62,10 +73,13 @@ class CheckUrl(object):
 
         self.url_logger.info("Total Time:%s" % (time.time() - st_time))
 
-    def url_include(self, url):
-        if urlparse.urlparse(url).netloc in config.INCLUDE_DOMAIN:
-            return True
-        return False
+    # if not the sub domain then return false
+    def url_filter(self, url):
+
+        if urlparse.urlparse(url).netloc != urlparse.urlparse(self.domain).netloc:
+            print url
+            return False
+        return True
 
     # extract url from page
     # return list of url
@@ -75,7 +89,7 @@ class CheckUrl(object):
         request = urllib2.Request(url.encode('utf-8'), headers=headers)
         try:
             response = urllib2.urlopen(request)
-            if self.url_include(url):
+            if self.url_filter(url):
                 page = response.read().decode('utf-8')
                 soup = BeautifulSoup(page)
                 for tag in soup.findAll('a', href=True):
@@ -96,36 +110,41 @@ class CheckUrl(object):
 
 
 class MetaThreading(threading.Thread):
-    def __init__(self, task, u_queue, u_dict, u_lock, name):
+    def __init__(self, task, u_queue, u_dict, u_lock, u_flag, name):
         threading.Thread.__init__(self)
         self.do_task = task
         self.task_queue = u_queue
         self.url_dict = u_dict
         self.lock = u_lock
+        self.flag = u_flag
         self.name = name
 
     def run(self):
-        while CheckUrl.have_checked_url_num < config.URL_TOTAL_NUM:
+        print "Threading-"+self.name+" is running..."
+        while JobFlag[self.flag] <= config.URL_TOTAL_NUM:
             if not self.task_queue.empty():
                 url = self.task_queue.get()
-                if url in self.url_dict:
-                    self.task_queue.task_done()
-                    continue
-                else:
+                if url not in self.url_dict:
                     with self.lock:
-                        if url in self.url_dict:
+                        if url not in self.url_dict:  # check multi threads
+                            self.url_dict[url] = 1
+                            JobFlag[self.flag] += 1
+                        else:
                             self.task_queue.task_done()
                             continue
-                        else:
-                            self.url_dict['url'] = 1
-                            CheckUrl.have_checked_url_num += 1
+                else:
+                    self.task_queue.task_done()
+                    continue
                 urls = self.do_task(url)
                 if urls:
                     for item in urls:
                         self.task_queue.put(item)
                 self.task_queue.task_done()
             else:
-                time.sleep(1)
+                time.sleep(5)
+                if self.task_queue.empty():
+                    break
+        print "Threading-"+self.name+" is closing..."
 
 if __name__ == "__main__":
     cu = CheckUrl()
