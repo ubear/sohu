@@ -21,8 +21,6 @@ JobFlag = {}
 
 class CheckUrl(object):
 
-    have_checked_url_num = 0
-
     # configuration
     def __init__(self, domain=None):
         self.domain = domain if domain else config.SITE
@@ -77,7 +75,6 @@ class CheckUrl(object):
     def url_filter(self, url):
 
         if urlparse.urlparse(url).netloc != urlparse.urlparse(self.domain).netloc:
-            print url
             return False
         return True
 
@@ -142,8 +139,6 @@ class MetaThreading(threading.Thread):
                 self.task_queue.task_done()
             else:
                 time.sleep(5)
-                if self.task_queue.empty():
-                    break
         print "Threading-"+self.name+" is closing..."
 
 if __name__ == "__main__":
