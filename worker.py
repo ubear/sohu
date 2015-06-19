@@ -108,7 +108,6 @@ class MetaThreading(threading.Thread):
         while CheckUrl.have_checked_url_num < config.URL_TOTAL_NUM:
             if not self.task_queue.empty():
                 url = self.task_queue.get()
-                print url
                 if url in self.url_dict:
                     self.task_queue.task_done()
                     continue
