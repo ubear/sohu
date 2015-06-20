@@ -9,7 +9,7 @@ DOMAIN = "http://m.sohu.com/"
 
 
 # logging
-LOG_DIR = "/tmp/log"
+LOG_DIR = "/tmp/log/test"
 LOG_CONTENT_FMT = '%(asctime)s-%(message)s'
 LOG_FILENAME_FMT = "D_%Y-%m-%d_T%H%M"
 
@@ -19,5 +19,5 @@ THREAD_NUMBER = 100
 
 
 # the total number of url
-URL_TOTAL_NUM = 10
+URL_TOTAL_NUM = 10000
 
