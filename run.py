@@ -7,10 +7,11 @@
 # 多线程爬取
 # 结束/数据统计/比如运行了多长时间
 
-from worker import CheckUrl
+from sohu import SohuUrlCheck
+
 
 if __name__ == "__main__":
-    cu = CheckUrl()
-    cu.process()
+    sc = SohuUrlCheck()
+    sc.process()
 
     print ")O("

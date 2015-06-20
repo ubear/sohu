@@ -6,24 +6,20 @@ import time
 import threading
 import Queue
 import logging
-import urllib2
 import urlparse
 from datetime import datetime
 
-# web scrapy
-from bs4 import BeautifulSoup
-
-# configuration
 import config
 
-JobFlag = {}
+# Job's flag
+job_flag = {}
 
 
 class CheckUrl(object):
 
     # configuration
     def __init__(self, domain=None):
-        self.domain = domain if domain else config.SITE
+        self.domain = domain if domain else config.DOMAIN
         self.url_queue = Queue.Queue()
         self.url_queue.put(self.domain)
         self.url_dict = {}
@@ -36,7 +32,7 @@ class CheckUrl(object):
         prefix = urlparse.urlparse(self.domain).netloc
         suffix = datetime.now().strftime(config.LOG_FILENAME_FMT)
         flag = prefix+suffix
-        JobFlag[flag] = 0
+        job_flag[flag] = 0
         return flag
 
     # configuration for logger
@@ -68,42 +64,39 @@ class CheckUrl(object):
 
         for thread in threads:
             thread.join()
-
         self.url_logger.info("Total Time:%s" % (time.time() - st_time))
 
     # if not the sub domain then return false
     def url_filter(self, url):
-
         if urlparse.urlparse(url).netloc != urlparse.urlparse(self.domain).netloc:
+            print url
             return False
         return True
 
-    # extract url from page
-    # return list of url
+    # extract url from page return list of url
     def extract_url(self, url):
-        urls = []
-        headers = {"User-Agent": 'Mozilla 5.10', "Connection": "close"}
-        request = urllib2.Request(url.encode('utf-8'), headers=headers)
-        try:
-            response = urllib2.urlopen(request)
-            if self.url_filter(url):
-                page = response.read().decode('utf-8')
-                soup = BeautifulSoup(page)
-                for tag in soup.findAll('a', href=True):
-                    url_item = urlparse.urljoin(self.domain, tag['href'])
-                    urls.append(url_item)
-            else:
-                pass
-        except urllib2.HTTPError, e:
-            self.url_logger.error("HTTPError-"+str(e.code)+"-"+url)
-        except urllib2.URLError, e:
-            self.url_logger.error("URLError-"+str(e.reason)+"-"+url)
-        else:
-            # import traceback
-            # self.url_logger.error(url+"---"+traceback.format_exc())
-            pass
-        finally:
-            return urls
+        # urls = []
+        # headers = {"User-Agent": 'Mozilla 5.10', "Connection": "close"}
+        # request = urllib2.Request(url.encode('utf-8'), headers=headers)
+        # try:
+        #     response = urllib2.urlopen(request)
+        #     if self.url_filter(url):
+        #         page = response.read().decode('utf-8')
+        #         soup = BeautifulSoup(page)
+        #         for tag in soup.findAll('a', href=True):
+        #             url_item = urlparse.urljoin(self.domain, tag['href'])
+        #             urls.append(url_item)
+        #     else:
+        #         pass
+        # except urllib2.HTTPError, e:
+        #     self.url_logger.error("HTTPError-"+str(e.code)+"-"+url)
+        # except urllib2.URLError, e:
+        #     self.url_logger.error("URLError-"+str(e.reason)+"-"+url)
+        # else:
+        #     pass
+        # finally:
+        #     return urls
+        pass
 
 
 class MetaThreading(threading.Thread):
@@ -118,14 +111,14 @@ class MetaThreading(threading.Thread):
 
     def run(self):
         print "Threading-"+self.name+" is running..."
-        while JobFlag[self.flag] <= config.URL_TOTAL_NUM:
+        while job_flag[self.flag] <= config.URL_TOTAL_NUM:
             if not self.task_queue.empty():
                 url = self.task_queue.get()
                 if url not in self.url_dict:
                     with self.lock:
                         if url not in self.url_dict:  # check multi threads
                             self.url_dict[url] = 1
-                            JobFlag[self.flag] += 1
+                            job_flag[self.flag] += 1
                         else:
                             self.task_queue.task_done()
                             continue
@@ -140,6 +133,7 @@ class MetaThreading(threading.Thread):
             else:
                 time.sleep(5)
         print "Threading-"+self.name+" is closing..."
+
 
 if __name__ == "__main__":
     cu = CheckUrl()
