@@ -19,5 +19,9 @@ THREAD_NUMBER = 100
 
 
 # the total number of url
-URL_TOTAL_NUM = 10
+URL_TOTAL_NUM = 10000
+
+
+# the interval for exc the job and the
+INTERVAL_EXC = 10 * 60 
 

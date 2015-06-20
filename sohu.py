@@ -36,7 +36,7 @@ class SohuUrlCheck(worker.CheckUrl):
         request = urllib2.Request(url.encode('utf-8'), headers=headers)
         try:
             response = urllib2.urlopen(request)
-            if super(SohuUrlCheck, self).url_filter(url):
+            if self.__check_domain(url):
                 page = response.read().decode('utf-8')
                 soup = BeautifulSoup(page)
                 for tag in soup.findAll('a', href=True):
