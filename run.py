@@ -8,7 +8,7 @@
 # 结束/数据统计/比如运行了多长时间
 
 from sohu import SohuUrlCheck
-
+cd
 
 if __name__ == "__main__":
     sc = SohuUrlCheck()
