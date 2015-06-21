@@ -83,7 +83,7 @@ class MetaThreading(threading.Thread):
         self.name = name
 
     def run(self):
-        print "Threading-"+self.name+" is running..."
+        # print "Threading-"+self.name+" is running..."
         while job_flag[self.flag] <= config.URL_TOTAL_NUM:
             if not self.task_queue.empty():
                 node = self.task_queue.get()
@@ -105,7 +105,7 @@ class MetaThreading(threading.Thread):
                 self.task_queue.task_done()
             else:
                 time.sleep(2)
-        print "Threading-"+self.name+" is closing..."
+        # print "Threading-"+self.name+" is closing..."
 
 
 if __name__ == "__main__":

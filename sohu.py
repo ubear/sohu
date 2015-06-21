@@ -19,7 +19,7 @@ class SohuUrlCheck(CheckUrl):
         self.vaditator = HttpUrl()
 
     def extract_url(self, node):
-        print node.link
+        #print node.link
         nodes = []
         headers = {"User-Agent": 'Mozilla 5.10', "Connection": "close"}
         request = urllib2.Request(node.link.encode('utf-8'), headers=headers)
@@ -81,6 +81,8 @@ class SohuUrlCheck(CheckUrl):
         # other domain that needs to test
         if url_hostname in config.OTHER_INCLUDE_DOMAIN:
             return True
+
+        print url
         return False
 
 
