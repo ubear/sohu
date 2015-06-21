@@ -104,7 +104,7 @@ class MetaThreading(threading.Thread):
                         self.task_queue.put(item)
                 self.task_queue.task_done()
             else:
-                time.sleep(2)
+                time.sleep(5)
         # print "Threading-"+self.name+" is closing..."
 
 
