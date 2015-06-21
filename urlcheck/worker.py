@@ -66,36 +66,8 @@ class CheckUrl(object):
             thread.join()
         self.url_logger.info("Total Time:%s" % (time.time() - st_time))
 
-    # if not the sub domain then return false
-    def url_filter(self, url):
-        if urlparse.urlparse(url).netloc != urlparse.urlparse(self.domain).netloc:
-            print url
-            return False
-        return True
-
     # extract url from page return list of url
     def extract_url(self, url):
-        # urls = []
-        # headers = {"User-Agent": 'Mozilla 5.10', "Connection": "close"}
-        # request = urllib2.Request(url.encode('utf-8'), headers=headers)
-        # try:
-        #     response = urllib2.urlopen(request)
-        #     if self.url_filter(url):
-        #         page = response.read().decode('utf-8')
-        #         soup = BeautifulSoup(page)
-        #         for tag in soup.findAll('a', href=True):
-        #             url_item = urlparse.urljoin(self.domain, tag['href'])
-        #             urls.append(url_item)
-        #     else:
-        #         pass
-        # except urllib2.HTTPError, e:
-        #     self.url_logger.error("HTTPError-"+str(e.code)+"-"+url)
-        # except urllib2.URLError, e:
-        #     self.url_logger.error("URLError-"+str(e.reason)+"-"+url)
-        # else:
-        #     pass
-        # finally:
-        #     return urls
         pass
 
 
