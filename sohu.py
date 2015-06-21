@@ -25,12 +25,13 @@ class SohuUrlCheck(CheckUrl):
         request = urllib2.Request(node.link.encode('utf-8'), headers=headers)
         try:
             response = urllib2.urlopen(request)
-            page = response.read().decode('utf-8')
-            nodes = self.get_urls_from_page(page)
+            if node.hypertype == Node.LINK_A:
+                page = response.read().decode('utf-8')
+                nodes = self.get_urls_from_page(page)
         except urllib2.HTTPError, e:
-            self.url_logger.error("HTTPError-"+str(e.code)+"-"+url)
+            self.url_logger.error("HTTPError-"+str(e.code)+"-"+ node.link)
         except urllib2.URLError, e:
-            self.url_logger.error("URLError-"+str(e.reason)+"-"+url)
+            self.url_logger.error("URLError-"+str(e.reason)+"-"+ node.link)
         else:
             pass
         finally:
@@ -81,14 +82,6 @@ class SohuUrlCheck(CheckUrl):
         if url_hostname in config.OTHER_INCLUDE_DOMAIN:
             return True
         return False
-
-    def test(self):
-        u = ["http://m.baidu.com", "http://m.sohu.com", "http://data.m.sohu.com",
-         "http://m.data.sohu.com",
-         "http://s1.rr.itc.cn/h5/js/tags/v3/msohu/3.1.37/home.js"]
-
-        for item in u:
-            print self.check_domain(item)
 
 
 if __name__ == "__main__":
