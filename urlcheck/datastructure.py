@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding=utf8 -*-
 
-# url and it type
-class Node():
+# url and its type
+class Node(object):
     LINK_A = 1
     LINK_OHTER = 0
 
