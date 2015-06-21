@@ -36,7 +36,7 @@ If you run it like this:
 ```
 python runCmd.py
 ```
-It will invoke the `SohuUrlCheck` class and check `http://m.sohu.com`.
+It will invoke the `SohuUrlCheck` class and check *http://m.sohu.com*.
 
 If you want to run it by timer, and you use Linux exactly right, you can use `crontab` service. Maybe you can get some useful information from [here](http://www.adminschoice.com/crontab-quick-reference).
 
