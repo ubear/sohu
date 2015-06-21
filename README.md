@@ -25,7 +25,8 @@ Maybe [virtualenv](https://virtualenv.pypa.io/en/latest/) and [virtualenvwrapper
 ```
 python runCmd.py http://www.baidu.com/
 ```
-This code will use the `BaseUrlCheck` class in `base.py` to check **www.baidu.com** and create a folder named **www
+This code will use the `BaseUrlCheck` class in `base.py` to check **www
+.baidu.com** and create a folder named **www
 .baidu.com** under `LOG_DIR` which you can set in `urlcheck/config.py`, then put the error link log in the folder.But
  `BaseUrlCheck` is so simple that it just is used to test. 
 
