@@ -19,7 +19,6 @@ class SohuUrlCheck(CheckUrl):
         self.vaditator = HttpUrl()
 
     def extract_url(self, node):
-        #print node.link
         nodes = []
         headers = {"User-Agent": 'Mozilla 5.10', "Connection": "close"}
         request = urllib2.Request(node.link.encode('utf-8'), headers=headers)
@@ -72,10 +71,12 @@ class SohuUrlCheck(CheckUrl):
     def check_domain(cls, url):
         url_hostname = urlparse.urlparse(url).hostname
 
-        # two type of sub domain of m.sohu.com: xxx.m.sohu.com/m.xxx.sohu.com
+        # three type of sub domain of m.sohu.com: xxx.m.sohu.com/m.xxx.sohu.com/xxx.m.xxx.sohu.com
         if url_hostname.endswith("m.sohu.com"):
             return True
         if url_hostname.startswith("m.") and url_hostname.endswith(".sohu.com"):
+            return True
+        if ".m." in url_hostname and url_hostname.endswith(".sohu.com"):
             return True
 
         # other domain that needs to test
