@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding=utf8
+# -*- coding=utf8 -*-
 
 # configure for project
 
@@ -9,7 +9,7 @@ OTHER_INCLUDE_DOMAIN = []
 
 
 # logging
-LOG_DIR = "log"
+LOG_DIR = "logdir"
 LOG_CONTENT_FMT = '%(asctime)s-%(message)s'
 LOG_FILENAME_FMT = "D_%Y-%m-%d_T%H%M"
 
@@ -19,9 +19,9 @@ THREAD_NUMBER = 100
 
 
 # the total number of url
-URL_TOTAL_NUM = 100
+URL_TOTAL_NUM = 1000
 
 
 # the interval for exc the job and the
-INTERVAL_EXC = 10 * 60
+INTERVAL_EXC = 600
 
