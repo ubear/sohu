@@ -14,9 +14,10 @@ from urlcheck.worker import Node
 
 class SohuUrlCheck(CheckUrl):
 
-    def __init__(self):
+    def __init__(self, FULL=True):
         super(SohuUrlCheck, self).__init__(domain="http://m.sohu.com/")
         self.vaditator = HttpUrl()
+        self.full_check = FULL
 
     def extract_url(self, node):
         nodes = []
@@ -47,7 +48,7 @@ class SohuUrlCheck(CheckUrl):
                 nodes.append(Node(url_item, Node.LINK_A)) # repeat little so do not use set()
 
         # other tag (css/js/image)
-        if config.OHTER_LINK_CHECK:
+        if self.full_check:
             other_urls = []
             img_soup = soup.findAll('img', src=True)
             css_soup = soup.findAll("link", href=True)
@@ -83,7 +84,6 @@ class SohuUrlCheck(CheckUrl):
         if url_hostname in config.OTHER_INCLUDE_DOMAIN:
             return True
 
-        print url
         return False
 
 

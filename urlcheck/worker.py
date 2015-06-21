@@ -20,7 +20,7 @@ class CheckUrl(object):
 
     # configuration
     def __init__(self, domain=None):
-        self.domain = domain if domain else config.DOMAIN
+        self.domain = domain
         self.url_queue = Queue.Queue()
         self.url_queue.put(Node(self.domain, Node.LINK_A))
         self.url_dict = {}
