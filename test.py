@@ -24,3 +24,34 @@ if __name__ == "__main__":
     sh = SohuUrlCheck()
     for item in u:
         print sh.vaditator(item)
+    # import urllib
+    import urllib2
+    from bs4 import BeautifulSoup
+
+    # sock = urllib.urlopen("http://m.sohu.com/")
+    # soup = BeautifulSoup(sock.read())
+    # sock.close()
+    #
+    # img = soup.findAll("img", src=True)
+    # script = soup.findAll("script", {"type" : "text/javascript"}, src=True)
+    # css = soup.findAll("link", href=True)
+    #
+    # print img
+    # print script
+    # print css
+
+    headers = {"User-Agent": 'Mozilla 5.10', "Connection": "close"}
+    request = urllib2.Request("http://m.sohu.com/", headers=headers)
+    response = urllib2.urlopen(request)
+    page = response.read().decode('utf-8')
+    soup = BeautifulSoup(page)
+    img = soup.findAll("img")
+    script = soup.findAll("script", {"type" : "text/javascript"}, src=True)
+    css = soup.findAll("link", href=True)
+
+    print img
+    print script
+    print css
+
+
+

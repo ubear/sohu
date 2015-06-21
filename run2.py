@@ -11,3 +11,4 @@ def job():
 
 if __name__ == "__main__":
     job()
+    print "OK"

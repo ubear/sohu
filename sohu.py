@@ -7,28 +7,26 @@ import urlparse
 from bs4 import BeautifulSoup
 from lepl.apps.rfc3696 import HttpUrl
 
-from urlcheck import worker
 from urlcheck import config
+from urlcheck.worker import CheckUrl
+from urlcheck.worker import Node
 
 
-class SohuUrlCheck(worker.CheckUrl):
+class SohuUrlCheck(CheckUrl):
 
     def __init__(self):
         super(SohuUrlCheck, self).__init__(domain="http://m.sohu.com/")
         self.vaditator = HttpUrl()
 
-    def extract_url(self, url):
-        urls = []
+    def extract_url(self, node):
+        print node.link
+        nodes = []
         headers = {"User-Agent": 'Mozilla 5.10', "Connection": "close"}
-        request = urllib2.Request(url.encode('utf-8'), headers=headers)
+        request = urllib2.Request(node.link.encode('utf-8'), headers=headers)
         try:
             response = urllib2.urlopen(request)
             page = response.read().decode('utf-8')
-            soup = BeautifulSoup(page)
-            for tag in soup.findAll('a', href=True):
-                url_item = urlparse.urljoin(self.domain, tag['href'])
-                if self.vaditator(url_item) and self.check_domain(url_item):
-                    urls.append(url_item)
+            nodes = self.get_urls_from_page(page)
         except urllib2.HTTPError, e:
             self.url_logger.error("HTTPError-"+str(e.code)+"-"+url)
         except urllib2.URLError, e:
@@ -36,7 +34,38 @@ class SohuUrlCheck(worker.CheckUrl):
         else:
             pass
         finally:
-            return urls
+            return nodes
+
+    def get_urls_from_page(self, page):
+        nodes = []
+        soup = BeautifulSoup(page)
+
+        # tag <a>
+        for tag in soup.findAll('a', href=True):
+            url_item = urlparse.urljoin(self.domain, tag['href'])
+            if self.vaditator(url_item) and self.check_domain(url_item):
+                nodes.append(Node(url_item, Node.LINK_A)) # repeat little so do not use set()
+
+        # other tag (css/js/image)
+        if config.OHTER_LINK_CHECK:
+            other_urls = []
+            img_soup = soup.findAll('img', src=True)
+            css_soup = soup.findAll("link", href=True)
+            js_soup =  soup.findAll("script", {"type" : "text/javascript"}, src=True)
+            for item in (img_soup, js_soup, css_soup):
+                for url in item:
+                    if item == css_soup:
+                        url = urlparse.urljoin(self.domain, url['href'])
+                    else:
+                        url = urlparse.urljoin(self.domain, url['src'])
+                    if self.vaditator(url): # do not need check the domain
+                        other_urls.append(url)
+            other_urls = set(other_urls) # because of having many repetitive urls
+            if other_urls:
+                for url in other_urls:
+                    nodes.append(Node(url, Node.LINK_OHTER))
+
+        return nodes
 
     @classmethod
     def check_domain(cls, url):
@@ -64,4 +93,4 @@ class SohuUrlCheck(worker.CheckUrl):
 
 if __name__ == "__main__":
     sh = SohuUrlCheck()
-    sh.test()
+    sh.process()

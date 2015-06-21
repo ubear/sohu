@@ -10,6 +10,9 @@ DOMAIN = "http://m.sohu.com/"
 # other domain we crawl from the web but also need to check
 OTHER_INCLUDE_DOMAIN = []
 
+# if check css/js/imags then set it True else set it False
+OHTER_LINK_CHECK = True
+
 # logging
 LOG_DIR = "log"
 LOG_CONTENT_FMT = '%(asctime)s-%(message)s'
@@ -21,7 +24,7 @@ THREAD_NUMBER = 100
 
 
 # the total number of url
-URL_TOTAL_NUM = 10000
+URL_TOTAL_NUM = 100
 
 
 # the interval for exc the job and the

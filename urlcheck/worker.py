@@ -10,6 +10,7 @@ import urlparse
 from datetime import datetime
 
 import config
+from datastructure import Node
 
 # Job's flag
 job_flag = {}
@@ -21,7 +22,7 @@ class CheckUrl(object):
     def __init__(self, domain=None):
         self.domain = domain if domain else config.DOMAIN
         self.url_queue = Queue.Queue()
-        self.url_queue.put(self.domain)
+        self.url_queue.put(Node(self.domain, Node.LINK_A))
         self.url_dict = {}
         self.lock = threading.Lock()
         self.url_logger = self.__set_logger()
@@ -85,11 +86,11 @@ class MetaThreading(threading.Thread):
         print "Threading-"+self.name+" is running..."
         while job_flag[self.flag] <= config.URL_TOTAL_NUM:
             if not self.task_queue.empty():
-                url = self.task_queue.get()
-                if url not in self.url_dict:
+                node = self.task_queue.get()
+                if node.link not in self.url_dict:
                     with self.lock:
-                        if url not in self.url_dict:  # check multi threads
-                            self.url_dict[url] = 1
+                        if node.link not in self.url_dict:  # check multi threads
+                            self.url_dict[node.link] = 1
                             job_flag[self.flag] += 1
                         else:
                             self.task_queue.task_done()
@@ -97,9 +98,9 @@ class MetaThreading(threading.Thread):
                 else:
                     self.task_queue.task_done()
                     continue
-                urls = self.do_task(url)
-                if urls:
-                    for item in urls:
+                nodes = self.do_task(node)
+                if nodes:
+                    for item in nodes:
                         self.task_queue.put(item)
                 self.task_queue.task_done()
             else:
