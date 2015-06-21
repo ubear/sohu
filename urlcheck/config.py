@@ -9,7 +9,7 @@ DOMAIN = "http://m.sohu.com/"
 
 
 # logging
-LOG_DIR = "/tmp/log"
+LOG_DIR = "/home/admin318/log"
 LOG_CONTENT_FMT = '%(asctime)s-%(message)s'
 LOG_FILENAME_FMT = "D_%Y-%m-%d_T%H%M"
 
