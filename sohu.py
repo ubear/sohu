@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from lepl.apps.rfc3696 import HttpUrl
 
 from urlcheck import worker
+from urlcheck import config
 
 
 class SohuUrlCheck(worker.CheckUrl):
@@ -16,35 +17,18 @@ class SohuUrlCheck(worker.CheckUrl):
         super(SohuUrlCheck, self).__init__(domain="http://m.sohu.com/")
         self.vaditator = HttpUrl()
 
-    def __validate_url(self, url):
-        url = url.strip()
-        return self.vaditator(url)
-
-    def __check_domain(self, url):
-        url_hostname = urlparse.urlparse(url).hostname
-        domain_hostname = urlparse.urlparse(self.domain).hostname
-        if url_hostname == domain_hostname:
-            return True
-        return False
-
     def extract_url(self, url):
-        print url
-        if not self.__validate_url(url):
-            return []
         urls = []
         headers = {"User-Agent": 'Mozilla 5.10', "Connection": "close"}
         request = urllib2.Request(url.encode('utf-8'), headers=headers)
         try:
             response = urllib2.urlopen(request)
-            if self.__check_domain(url):
-                page = response.read().decode('utf-8')
-                soup = BeautifulSoup(page)
-                for tag in soup.findAll('a', href=True):
-                    url_item = urlparse.urljoin(self.domain, tag['href'])
-                    if self.__check_domain(url_item):
-                        urls.append(url_item)
-            else:
-                pass
+            page = response.read().decode('utf-8')
+            soup = BeautifulSoup(page)
+            for tag in soup.findAll('a', href=True):
+                url_item = urlparse.urljoin(self.domain, tag['href'])
+                if self.vaditator(url_item) and self.check_domain(url_item):
+                    urls.append(url_item)
         except urllib2.HTTPError, e:
             self.url_logger.error("HTTPError-"+str(e.code)+"-"+url)
         except urllib2.URLError, e:
@@ -53,3 +37,31 @@ class SohuUrlCheck(worker.CheckUrl):
             pass
         finally:
             return urls
+
+    @classmethod
+    def check_domain(cls, url):
+        url_hostname = urlparse.urlparse(url).hostname
+
+        # two type of sub domain of m.sohu.com: xxx.m.sohu.com/m.xxx.sohu.com
+        if url_hostname.endswith("m.sohu.com"):
+            return True
+        if url_hostname.startswith("m.") and url_hostname.endswith(".sohu.com"):
+            return True
+
+        # other domain that needs to test
+        if url_hostname in config.OTHER_INCLUDE_DOMAIN:
+            return True
+        return False
+
+    def test(self):
+        u = ["http://m.baidu.com", "http://m.sohu.com", "http://data.m.sohu.com",
+         "http://m.data.sohu.com",
+         "http://s1.rr.itc.cn/h5/js/tags/v3/msohu/3.1.37/home.js"]
+
+        for item in u:
+            print self.check_domain(item)
+
+
+if __name__ == "__main__":
+    sh = SohuUrlCheck()
+    sh.test()
