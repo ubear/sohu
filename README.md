@@ -1,13 +1,14 @@
 # A Simple Framework That Can Be Used To Check The Urls Of A Web Site
 
 ### The libraries used
->APScheduler==3.0.3
-beautifulsoup4==4.3.2
-futures==3.0.3
-LEPL==5.1.3
-pytz==2015.4
-six==1.9.0
-tzlocal==1.2
+>
+- APScheduler==3.0.3
+- beautifulsoup4==4.3.2
+- futures==3.0.3
+- LEPL==5.1.3
+- pytz==2015.4
+- six==1.9.0
+- tzlocal==1.2
 
 ### How to use
 - get the codes
@@ -24,7 +25,9 @@ Maybe [virtualenv](https://virtualenv.pypa.io/en/latest/) and [virtualenvwrapper
 ```
 python runCmd.py http://www.baidu.com/
 ```
-This code will use the `BaseUrlCheck` class in `base.py` to check *www.baidu.com* and create a folder named *www.baidu.com* under `LOG_DIR` which you can set in `urlcheck/config.py`, then put the error link log in the folder.But `BaseUrlCheck` is so simple that it just is used to test. 
+This code will use the `BaseUrlCheck` class in `base.py` to check **www.baidu.com** and create a folder named **www
+.baidu.com** under `LOG_DIR` which you can set in `urlcheck/config.py`, then put the error link log in the folder.But
+ `BaseUrlCheck` is so simple that it just is used to test. 
 
 If you do not meet the function, you can inherit the `CheckUrl` class in `urlcheck/worker.py` which provides a simple multi thread and log framework and overwrite the `extract_url` function.`BaseUrlCheck` and `SohuUrlCheck` in `sohu.py` are simple examples.
 
@@ -52,23 +55,23 @@ If you realize your own class by inheriting the `CheckUrl`, you can rewrite the 
 ### Configuration
 All the configuration is in `urlcheck/config.py`.
 
-#### OTHER_INCLUDE_DOMAIN
+##### OTHER_INCLUDE_DOMAIN
 This item will be *Abandoned* and it just services `SohuUrlCheck` class currently.
 
-#### LOG_DIR
+##### LOG_DIR
 The catalog we store our log. The default is `logdir` under our project.
 
-#### LOG_CONTENT_FMT
+##### LOG_CONTENT_FMT
 The log format that used by [logging](https://docs.python.org/2/library/logging.html).And the default is `%(asctime)s-%(message)s`.
 
-#### LOG_FILENAME_FMT
+##### LOG_FILENAME_FMT
 The filename of log text. The default is `D_%Y-%m-%d_T%H%M`.
 
-#### THREAD_NUMBER
+##### THREAD_NUMBER
 The number of Thread. The default is `100`.
 
-#### URL_TOTAL_NUM
+##### URL_TOTAL_NUM
 The number of url we need check. The default is `1000`.
 
-#### INTERVAL_EXC
+##### INTERVAL_EXC
 The time interval when wen run in timer mode. The time unit is second and the default is `600`, namely ten minutes.
