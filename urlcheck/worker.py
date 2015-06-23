@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding=utf8
+# -*- coding=utf8 -*-
 
 import os
 import time
@@ -20,7 +20,7 @@ class CheckUrl(object):
 
     # configuration
     def __init__(self, domain=None):
-        self.domain = domain if domain else config.DOMAIN
+        self.domain = domain
         self.url_queue = Queue.Queue()
         self.url_queue.put(Node(self.domain, Node.LINK_A))
         self.url_dict = {}
@@ -104,7 +104,7 @@ class MetaThreading(threading.Thread):
                         self.task_queue.put(item)
                 self.task_queue.task_done()
             else:
-                time.sleep(2)
+                time.sleep(5)
         # print "Threading-"+self.name+" is closing..."
 
 

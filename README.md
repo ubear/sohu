@@ -1,39 +1,79 @@
-# 检测页面框架
+## A Simple Framework That Can Be Used To Check The Urls Of A Web Site
 
-### 一个题目
+### The libraries used
+>
+- APScheduler==3.0.3
+- beautifulsoup4==4.3.2
+- futures==3.0.3
+- LEPL==5.1.3
+- pytz==2015.4
+- six==1.9.0
+- tzlocal==1.2
 
-请设计一个系统，自动完成对于某网站系统可靠性的检测。具体要求：
-- 定时递归检测所有XXX域名的页面以及这些页面上的链接的可达性，即有没有出现不可访问情况
-- XXX域名页面很多，从各个方面考虑性能优化
-- 对于错误的链接记录到日志中，日志包括：连接，时间，错误状态等。
-- 考虑多线程的方式实现
+### How to use
+- get the codes
+``` 
+git clone git@github.com:ubear/sohu.git
+```
+- install the libraries
+```
+cd sohu
+pip install -r requirements.txt
+```
+Maybe [virtualenv](https://virtualenv.pypa.io/en/latest/) and [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/) are good choices If you do not want the libraries to be installed to the system python library.
+- run in cmd mode
+```
+python runCmd.py http://www.baidu.com/
+```
+This code will use the `BaseUrlCheck` class in `base.py` to check **www
+.baidu.com** and create a folder named **www
+.baidu.com** under `LOG_DIR` which you can set in `urlcheck/config.py`, then put the error link log in the folder.But
+ `BaseUrlCheck` is so simple that it just is used to test. 
 
-### 想法
+If you do not meet the function, you can inherit the `CheckUrl` class in `urlcheck/worker.py` which provides a simple multi thread and log framework and overwrite the `extract_url` function.`BaseUrlCheck` and `SohuUrlCheck` in `sohu.py` are simple examples.
 
-看到这个题目时，感觉这个东西可以做成一个类似于框架的实现。可以实现以下几点要求：
-- 自定义检测的域名，并保留日志到以域名为特征的文件夹中
-- 可以定义多个检测的域名
-- 可以定时检测，日志文件名以时间作为名字
-- 自定义页面爬取规则，因有的还需要检测js/css/image等文件的可访问状态
-- 自定义过滤规则，因为有的不仅要检测某个域名，还需要检测子域名的页面
+If you run it like this:
+```
+python runCmd.py
+```
+It will invoke the `SohuUrlCheck` class and check *http://m.sohu.com*.
 
+If you want to run it by timer, and you use Linux exactly right, you can use `crontab` service. Maybe you can get some useful information from [here](http://www.adminschoice.com/crontab-quick-reference).
 
-### 实现
+- run in timer mode
 
-主要部分在`worker.py`文件中。设计了两个类：
-- `CheckUrl`:日志配置、线程池、页面爬取、过滤函数
-- `MetaThreading`：单个线程运行、队列维护、重复排除
+Type command like this:
+```
+python runTimer.py
+```
 
-### 使用
+This code will run the job of `SohuUrlCheck` every ten minutes. You can set the interval in `urlcheck/config.py`, namely  `INTERVAL_EXC` item. But notice that the time unit is second.For example, if you want run it every day, you can set it like this:
+```
+INTERVAL_EXC = 24 * 60 * 60
+```
 
-#### 重写函数
+If you realize your own class by inheriting the `CheckUrl`, you can rewrite the `job` function in `runTimer.py` easily and let it run your job.
 
-在使用过程中，通过继承`CheckUrl`类，重写其`exctract_url(url)`和`url_filter(url)`两个函数。
+### Configuration
+All the configuration is in `urlcheck/config.py`.
 
-第一个是提取页面函数，返回函数为`list`类型的数据，内容为页面的url。默认是使用`BeautifulSoup`库，要改写的话，可以使用`xpath`,`re`等库来提取url。
+##### OTHER_INCLUDE_DOMAIN
+This item will be *Abandoned* and it just services `SohuUrlCheck` class currently.
 
-第二个函数是考虑到有些页面(html)需要打开，而有些url只需要检测是否可达(如css/js/image等链接)。在需要打开的页面中，要过滤掉一些不属于该域名下的页面。默认写的是凡是不属于初始化域名中的链接，都会过滤掉，即返回`False`，如果不需要被过滤，则返回`True`。
+##### LOG_DIR
+The catalog we store our log. The default is `logdir` under our project.
 
-#### 配置
+##### LOG_CONTENT_FMT
+The log format that used by [logging](https://docs.python.org/2/library/logging.html).And the default is `%(asctime)s-%(message)s`.
 
-配置`config.py`文件中需要配置被检测域名、日志存储路径和相关格式、线程的个数、总共要检测的url个数等。
+##### LOG_FILENAME_FMT
+The filename of log text. The default is `D_%Y-%m-%d_T%H%M`.
+
+##### THREAD_NUMBER
+The number of Thread. The default is `100`.
+
+##### URL_TOTAL_NUM
+The number of url we need check. The default is `1000`.
+
+##### INTERVAL_EXC
+The time interval when wen run in timer mode. The time unit is second and the default is `600`, namely ten minutes.
