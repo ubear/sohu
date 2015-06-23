@@ -9,7 +9,7 @@ OTHER_INCLUDE_DOMAIN = []
 
 
 # logging
-LOG_DIR = "logdir"
+LOG_DIR = "log"
 LOG_CONTENT_FMT = '%(asctime)s-%(message)s'
 LOG_FILENAME_FMT = "D_%Y-%m-%d_T%H%M"
 
