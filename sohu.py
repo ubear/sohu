@@ -31,8 +31,6 @@ class SohuUrlCheck(CheckUrl):
             self.url_logger.error("HTTPError-"+str(e.code)+"-"+ node.link)
         except urllib2.URLError, e:
             self.url_logger.error("URLError-"+str(e.reason)+"-"+ node.link)
-        else:
-            pass
         finally:
             return nodes
 
