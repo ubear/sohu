@@ -19,30 +19,29 @@ job_flag = {}
 class CheckUrl(object):
 
     # configuration
-    def __init__(self, domain=None):
+    def __init__(self, domain="http://m.sohu.com/"):
         self.domain = domain
         self.url_queue = Queue.Queue()
         self.url_queue.put(Node(self.domain, Node.LINK_A))
-        self.url_dict = {}
         self.lock = threading.Lock()
+        self.hostname = urlparse.urlparse(self.domain).hostname
+        self.filename = datetime.now().strftime(config.LOG_FILENAME_FMT)
         self.url_logger = self.__set_logger()
         self.job_flag = self.__set_job_flag()
 
     # set the class to JobFlag
     def __set_job_flag(self):
-        prefix = urlparse.urlparse(self.domain).netloc
-        suffix = datetime.now().strftime(config.LOG_FILENAME_FMT)
-        flag = prefix+suffix
+        flag = self.hostname + self.filename
         job_flag[flag] = 0
         return flag
 
     # configuration for logger
     def __set_logger(self):
-        log_dir_name = urlparse.urlparse(self.domain).netloc
+        log_dir_name = self.hostname
         full_file_path = os.path.join(config.LOG_DIR, log_dir_name)
         if not os.path.exists(full_file_path):
             os.makedirs(full_file_path)
-        filename = datetime.now().strftime(config.LOG_FILENAME_FMT)+'.log'
+        filename = self.filename + '.log'
         logger = logging.getLogger(log_dir_name)
         logger.setLevel(logging.DEBUG)
         fmt = logging.Formatter(config.LOG_CONTENT_FMT)
@@ -58,7 +57,7 @@ class CheckUrl(object):
         st_time = time.time()
         for i in range(config.THREAD_NUMBER):
             mt = MetaThreading(self.extract_url, self.url_queue,
-                               self.url_dict, self.lock, self.job_flag, str(i))
+                               self.lock, self.job_flag, str(i))
             mt.setDaemon(True)
             mt.start()
             threads.append(mt)
@@ -73,11 +72,11 @@ class CheckUrl(object):
 
 
 class MetaThreading(threading.Thread):
-    def __init__(self, task, u_queue, u_dict, u_lock, u_flag, name):
+    def __init__(self, task, u_queue, u_lock, u_flag, name):
         threading.Thread.__init__(self)
         self.do_task = task
         self.task_queue = u_queue
-        self.url_dict = u_dict
+        self.url_dict = {}
         self.lock = u_lock
         self.flag = u_flag
         self.name = name

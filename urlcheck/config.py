@@ -25,3 +25,6 @@ URL_TOTAL_NUM = 1000
 # the interval for exc the job and the
 INTERVAL_EXC = 600
 
+
+# time out and the time unit is second
+TIME_OUT = 5

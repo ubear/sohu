@@ -3,6 +3,7 @@
 
 import urllib2
 import urlparse
+import socket
 
 from bs4 import BeautifulSoup
 from lepl.apps.rfc3696 import HttpUrl
@@ -14,24 +15,27 @@ from urlcheck.worker import Node
 
 class SohuUrlCheck(CheckUrl):
 
-    def __init__(self, FULL=True):
+    def __init__(self, full=True, timeout=None):
         super(SohuUrlCheck, self).__init__(domain="http://m.sohu.com/")
         self.vaditator = HttpUrl()
-        self.full_check = FULL
+        self.full_check = full
+        self.time_out = timeout if timeout else config.TIME_OUT
 
     def extract_url(self, node):
         nodes = []
         headers = {"User-Agent": 'Mozilla 5.10', "Connection": "close"}
         request = urllib2.Request(node.link.encode('utf-8'), headers=headers)
         try:
-            response = urllib2.urlopen(request)
+            response = urllib2.urlopen(request, timeout=self.time_out)
             if node.hypertype == Node.LINK_A:
                 page = response.read().decode('utf-8')
                 nodes = self.get_urls_from_page(page)
         except urllib2.HTTPError, e:
-            self.url_logger.error("HTTPError-"+str(e.code)+"-"+ node.link)
+            self.url_logger.error("HTTPError-" + str(e.code) + "-" + node.link)
         except urllib2.URLError, e:
-            self.url_logger.error("URLError-"+str(e.reason)+"-"+ node.link)
+            self.url_logger.error("URLError-" + str(e.reason) + "-" + node.link)
+        except socket.timeout, e:
+            self.url_logger.error("Timeout-%r" % e)
         finally:
             return nodes
 
