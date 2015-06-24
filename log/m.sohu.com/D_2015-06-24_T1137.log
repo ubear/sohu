@@ -1,0 +1,7 @@
+2015-06-24 11:37:22,232-HTTPError-404-http://m.sohu.com/f/Vv2Yfma/?_once_=000025_top_dongman_v2&_smuid=BMzCNOiQpQtpv7jYka6KG6&v=2
+2015-06-24 11:37:24,638-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_000001&_smuid=BMzCNOiQpQtpv7jYka6KG6&v=2
+2015-06-24 11:37:24,679-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_399001&_smuid=BMzCNOiQpQtpv7jYka6KG6&v=2
+2015-06-24 11:37:33,161-HTTPError-404-http://m.sohu.com/f/Yvuiuaa/?_once_=000025_applications_weibo_v2&_smuid=BMzCNOiQpQtpv7jYka6KG6&v=2
+2015-06-24 11:37:39,955-HTTPError-500-http://s.m.sohu.com/?v=2&_smuid=BMzCNOiQpQtpv7jYka6KG6
+2015-06-24 11:38:09,258-URLError-[Errno -2] Name or service not known-http://m.sohu.com/f/2y2Unma/?_once_=000091_precisionadvert_pd_js&_smuid=BMzCNOiQpQtpv7jYka6KG6&v=2
+2015-06-24 11:38:13,617-Total Time:57.5359609127

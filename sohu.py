@@ -42,13 +42,11 @@ class SohuUrlCheck(CheckUrl):
     def get_urls_from_page(self, page):
         nodes = []
         soup = BeautifulSoup(page)
-
         # tag <a>
         for tag in soup.findAll('a', href=True):
             url_item = urlparse.urljoin(self.domain, tag['href'])
             if self.vaditator(url_item) and self.check_domain(url_item):
                 nodes.append(Node(url_item, Node.LINK_A)) # repeat little so do not use set()
-
         # other tag (css/js/image)
         if self.full_check:
             other_urls = []
@@ -67,25 +65,21 @@ class SohuUrlCheck(CheckUrl):
             if other_urls:
                 for url in other_urls:
                     nodes.append(Node(url, Node.LINK_OHTER))
-
         return nodes
 
-    @classmethod
-    def check_domain(cls, url):
-        url_hostname = urlparse.urlparse(url).hostname
-
-        # three type of sub domain of m.sohu.com: xxx.m.sohu.com/m.xxx.sohu.com/xxx.m.xxx.sohu.com
+    def check_domain(self, url):
+        url_hostname = self.get_hostname(url) 
+        # three type of sub domain of m.sohu.com:
+        # xxx.m.sohu.com   m.xxx.sohu.com   xxx.m.xxx.sohu.com
         if url_hostname.endswith("m.sohu.com"):
             return True
         if url_hostname.startswith("m.") and url_hostname.endswith(".sohu.com"):
             return True
         if ".m." in url_hostname and url_hostname.endswith(".sohu.com"):
             return True
-
         # other domain that needs to test
         if url_hostname in config.OTHER_INCLUDE_DOMAIN:
             return True
-
         return False
 
 

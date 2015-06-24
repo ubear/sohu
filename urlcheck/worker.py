@@ -24,10 +24,13 @@ class CheckUrl(object):
         self.url_queue = Queue.Queue()
         self.url_queue.put(Node(self.domain, Node.LINK_A))
         self.lock = threading.Lock()
-        self.hostname = urlparse.urlparse(self.domain).hostname
+        self.hostname = self.get_hostname(self.domain) 
         self.filename = datetime.now().strftime(config.LOG_FILENAME_FMT)
         self.url_logger = self.__set_logger()
         self.job_flag = self.__set_job_flag()
+
+    def get_hostname(self, url):
+        return urlparse.urlparse(url).hostname
 
     # set the class to JobFlag
     def __set_job_flag(self):
