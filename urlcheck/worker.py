@@ -21,6 +21,7 @@ class CheckUrl(object):
     # configuration
     def __init__(self, domain="http://m.sohu.com/"):
         self.domain = domain
+        self.url_dict = {}
         self.url_queue = Queue.Queue()
         self.url_queue.put(Node(self.domain, Node.LINK_A))
         self.lock = threading.Lock()
@@ -29,7 +30,8 @@ class CheckUrl(object):
         self.url_logger = self.__set_logger()
         self.job_flag = self.__set_job_flag()
 
-    def get_hostname(self, url):
+    @classmethod
+    def get_hostname(cls, url):
         return urlparse.urlparse(url).hostname
 
     # set the class to JobFlag
@@ -48,7 +50,8 @@ class CheckUrl(object):
         logger = logging.getLogger(log_dir_name)
         logger.setLevel(logging.DEBUG)
         fmt = logging.Formatter(config.LOG_CONTENT_FMT)
-        file_hander = logging.FileHandler(os.path.join(full_file_path, filename))
+        file_hander = logging.FileHandler(os.path.join(full_file_path,
+                                                       filename))
         file_hander.setLevel(logging.DEBUG)
         file_hander.setFormatter(fmt)
         logger.addHandler(file_hander)
@@ -59,8 +62,9 @@ class CheckUrl(object):
         threads = []
         st_time = time.time()
         for i in range(config.THREAD_NUMBER):
-            mt = MetaThreading(self.extract_url, self.url_queue,
-                               self.lock, self.job_flag, str(i))
+            mt = MetaThreading(self.extract_url, self.url_dict,
+                               self.url_queue, self.lock,
+                               self.job_flag, str(i))
             mt.setDaemon(True)
             mt.start()
             threads.append(mt)
@@ -75,11 +79,11 @@ class CheckUrl(object):
 
 
 class MetaThreading(threading.Thread):
-    def __init__(self, task, u_queue, u_lock, u_flag, name):
+    def __init__(self, task, u_dict, u_queue, u_lock, u_flag, name):
         threading.Thread.__init__(self)
         self.do_task = task
         self.task_queue = u_queue
-        self.url_dict = {}
+        self.url_dict = u_dict
         self.lock = u_lock
         self.flag = u_flag
         self.name = name
