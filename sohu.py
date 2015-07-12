@@ -68,7 +68,7 @@ class SohuUrlCheck(CheckUrl):
         return nodes
 
     def check_domain(self, url):
-        url_hostname = self.get_hostname(url) 
+        url_hostname = self.get_hostname(url)
         # three type of sub domain of m.sohu.com:
         # xxx.m.sohu.com   m.xxx.sohu.com   xxx.m.xxx.sohu.com
         if url_hostname.endswith("m.sohu.com"):

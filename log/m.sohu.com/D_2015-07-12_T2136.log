@@ -1,0 +1,13 @@
+2015-07-12 21:36:34,516-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_000001&_smuid=d7FbQPxm3Fo4HVbMwaTnT&v=2
+2015-07-12 21:36:34,534-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_399001&_smuid=d7FbQPxm3Fo4HVbMwaTnT&v=2
+2015-07-12 21:36:34,564-HTTPError-404-http://m.sohu.com/f/Vv2Yfma/?_once_=000025_top_dongman_v2&_smuid=d7FbQPxm3Fo4HVbMwaTnT&v=2
+2015-07-12 21:36:42,449-Timeout-timeout('timed out',)
+2015-07-12 21:36:53,558-HTTPError-404-http://m.sohu.com/f/Yvuiuaa/?_once_=000025_applications_weibo_v2&_smuid=d7FbQPxm3Fo4HVbMwaTnT&v=2
+2015-07-12 21:37:02,717-HTTPError-500-http://s.m.sohu.com/?v=2&_smuid=d7FbQPxm3Fo4HVbMwaTnT
+2015-07-12 21:37:12,997-URLError-timed out-http://218.206.87.51/m.php?fr=g-game-mhsh
+2015-07-12 21:37:20,216-URLError-timed out-http://v.wap.sohu.com/yc/yule.html
+2015-07-12 21:37:34,072-URLError-[Errno -2] Name or service not known-http://m.sohu.com/f/2y2Unma/?_once_=000091_precisionadvert_pd_js&_smuid=d7FbQPxm3Fo4HVbMwaTnT&v=2
+2015-07-12 21:37:45,673-URLError-timed out-http://218.206.87.51/m.php?fr=g-game-mh17
+2015-07-12 21:37:48,973-HTTPError-500-http://s.m.sohu.com
+2015-07-12 21:37:49,063-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=MyStock&v=2
+2015-07-12 21:37:56,958-Total Time:87.5930049419

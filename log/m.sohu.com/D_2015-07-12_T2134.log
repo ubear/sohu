@@ -1,0 +1,16 @@
+2015-07-12 21:34:10,813-HTTPError-404-http://m.sohu.com/f/Vv2Yfma/?_once_=000025_top_dongman_v2&_smuid=0jujDJQl0KKlqqM48UOWrO&v=2
+2015-07-12 21:34:12,065-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_000001&_smuid=0jujDJQl0KKlqqM48UOWrO&v=2
+2015-07-12 21:34:12,074-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_399001&_smuid=0jujDJQl0KKlqqM48UOWrO&v=2
+2015-07-12 21:34:27,475-HTTPError-404-http://m.sohu.com/f/Yvuiuaa/?_once_=000025_applications_weibo_v2&_smuid=0jujDJQl0KKlqqM48UOWrO&v=2
+2015-07-12 21:34:35,735-HTTPError-500-http://s.m.sohu.com/?v=2&_smuid=0jujDJQl0KKlqqM48UOWrO
+2015-07-12 21:34:46,310-URLError-timed out-http://218.206.87.51/m.php?fr=g-game-mhsh
+2015-07-12 21:34:50,462-HTTPError-404-http://m.sohu.com/f/Vv2Yfma/?_once_=000025_top_dongman_v2&_smuid=Jn0MCkM0l2cJ3rXPXGXiCJ&v=2
+2015-07-12 21:34:52,724-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_399001&_smuid=Jn0MCkM0l2cJ3rXPXGXiCJ&v=2
+2015-07-12 21:34:52,929-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_000001&_smuid=Jn0MCkM0l2cJ3rXPXGXiCJ&v=2
+2015-07-12 21:35:09,103-HTTPError-404-http://m.sohu.com/f/Yvuiuaa/?_once_=000025_applications_weibo_v2&_smuid=Jn0MCkM0l2cJ3rXPXGXiCJ&v=2
+2015-07-12 21:35:19,353-HTTPError-500-http://s.m.sohu.com/?v=2&_smuid=Jn0MCkM0l2cJ3rXPXGXiCJ
+2015-07-12 21:35:29,339-URLError-timed out-http://218.206.87.51/m.php?fr=g-game-mhsh
+2015-07-12 21:35:36,259-URLError-timed out-http://v.wap.sohu.com/yc/yule.html
+2015-07-12 21:35:51,249-URLError-[Errno -2] Name or service not known-http://m.sohu.com/f/2y2Unma/?_once_=000091_precisionadvert_pd_js&_smuid=Jn0MCkM0l2cJ3rXPXGXiCJ&v=2
+2015-07-12 21:36:02,607-URLError-timed out-http://218.206.87.51/m.php?fr=g-game-mh17
+2015-07-12 21:36:22,789-Total Time:95.1255319118

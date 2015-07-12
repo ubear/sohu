@@ -1,0 +1,22 @@
+2015-07-12 22:11:19,933-HTTPError-404-http://m.sohu.com/f/Vv2Yfma/?_once_=000025_top_dongman_v2&_smuid=PmT3v87PTPZZzuArnJwOI&v=2
+2015-07-12 22:11:20,325-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_399001&_smuid=PmT3v87PTPZZzuArnJwOI&v=2
+2015-07-12 22:11:20,399-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_000001&_smuid=PmT3v87PTPZZzuArnJwOI&v=2
+2015-07-12 22:11:53,096-HTTPError-404-http://m.sohu.com/f/Vv2Yfma/?_once_=000025_top_dongman_v2&_smuid=Bpyb0VsYnuW7rfSLFNLEd6&v=2
+2015-07-12 22:11:53,371-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_399001&_smuid=Bpyb0VsYnuW7rfSLFNLEd6&v=2
+2015-07-12 22:11:53,438-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_000001&_smuid=Bpyb0VsYnuW7rfSLFNLEd6&v=2
+2015-07-12 22:11:59,047-HTTPError-404-http://m.sohu.com/f/Vv2Yfma/?_once_=000025_top_dongman_v2&_smuid=0v2Nv9xb7con6LUo7c3wJN&v=2
+2015-07-12 22:11:59,219-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_000001&_smuid=0v2Nv9xb7con6LUo7c3wJN&v=2
+2015-07-12 22:11:59,365-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=StockIndex&code=zs_399001&_smuid=0v2Nv9xb7con6LUo7c3wJN&v=2
+2015-07-12 22:13:18,265-HTTPError-404-http://m.sohu.com/f/Yvuiuaa/?_once_=000025_applications_weibo_v2&_smuid=0v2Nv9xb7con6LUo7c3wJN&v=2
+2015-07-12 22:13:30,920-HTTPError-404-http://m.sohu.com/f/Yvuiuaa/?_once_=000025_applications_weibo_v2&_smuid=Bpyb0VsYnuW7rfSLFNLEd6&v=2
+2015-07-12 22:13:46,685-HTTPError-500-http://s.m.sohu.com
+2015-07-12 22:13:54,119-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=MyStock&v=2
+2015-07-12 22:14:07,425-HTTPError-400-http://m.sohu.com/../html/index.php?pub=chens@wap.sohu.com1
+2015-07-12 22:14:13,948-HTTPError-500-http://s.m.sohu.com/?v=2&_smuid=Bpyb0VsYnuW7rfSLFNLEd6
+2015-07-12 22:14:47,710-URLError-timed out-http://218.206.87.51/m.php?fr=g-game-mhsh
+2015-07-12 22:15:36,187-URLError-timed out-http://v.wap.sohu.com/yc/yule.html
+2015-07-12 22:17:33,372-URLError-[Errno -2] Name or service not known-http://m.sohu.com/f/2y2Unma/?_once_=000091_precisionadvert_pd_js&_smuid=Bpyb0VsYnuW7rfSLFNLEd6&v=2
+2015-07-12 22:17:47,035-Total Time:353.253152132
+2015-07-12 22:18:13,404-URLError-timed out-http://218.206.87.51/m.php?fr=g-game-mh17
+2015-07-12 22:19:38,571-HTTPError-500-http://s.m.sohu.com
+2015-07-12 22:19:40,056-HTTPError-500-http://s.m.sohu.com/fin_web/jump.do?forward=MyStock&v=2

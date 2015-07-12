@@ -19,13 +19,13 @@ job_flag = {}
 class CheckUrl(object):
 
     # configuration
-    def __init__(self, domain="http://m.sohu.com/"):
+    def __init__(self, domain):
         self.domain = domain
         self.url_dict = {}
         self.url_queue = Queue.Queue()
         self.url_queue.put(Node(self.domain, Node.LINK_A))
         self.lock = threading.Lock()
-        self.hostname = self.get_hostname(self.domain) 
+        self.hostname = self.get_hostname(self.domain)
         self.filename = datetime.now().strftime(config.LOG_FILENAME_FMT)
         self.url_logger = self.__set_logger()
         self.job_flag = self.__set_job_flag()

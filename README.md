@@ -12,7 +12,7 @@
 
 ### How to use
 - get the codes
-``` 
+```
 git clone git@github.com:ubear/sohu.git
 ```
 - install the libraries
@@ -25,12 +25,12 @@ Maybe [virtualenv](https://virtualenv.pypa.io/en/latest/) and [virtualenvwrapper
 ```
 python runCmd.py http://www.baidu.com/
 ```
-This code will use the `BaseUrlCheck` class in `base.py` to check **www
+This code will use the `SampleUrlCheck` class in `sample.py` to check **www
 .baidu.com** and create a folder named **www
 .baidu.com** under `LOG_DIR` which you can set in `urlcheck/config.py`, then put the error link log in the folder.But
- `BaseUrlCheck` is so simple that it just is used to test. 
+ `SampleUrlCheck` is so simple that it just is used to test.
 
-If you do not meet the function, you can inherit the `CheckUrl` class in `urlcheck/worker.py` which provides a simple multi thread and log framework and overwrite the `extract_url` function.`BaseUrlCheck` and `SohuUrlCheck` in `sohu.py` are simple examples.
+If you do not meet the function, you can inherit the `CheckUrl` class in `urlcheck/worker.py` which provides a simple multi threads and log framework and overwrite the `extract_url` function.`SampleUrlCheck` and `SohuUrlCheck` in `sohu.py` are simple examples.
 
 If you run it like this:
 ```
@@ -44,7 +44,7 @@ If you want to run it by timer, and you use Linux exactly right, you can use `cr
 
 Type command like this:
 ```
-python runTimer.py
+python runTimer.py &
 ```
 
 This code will run the job of `SohuUrlCheck` every ten minutes. You can set the interval in `urlcheck/config.py`, namely  `INTERVAL_EXC` item. But notice that the time unit is second.For example, if you want run it every day, you can set it like this:
