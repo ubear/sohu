@@ -17,7 +17,6 @@ class SampleUrlCheck(CheckUrl):
         self.vaditator = HttpUrl()
 
     def extract_url(self, node):
-        print node.link
         nodes = []
         headers = {"User-Agent": 'Mozilla 5.10', "Connection": "close"}
         request = urllib2.Request(node.link.encode('utf-8'), headers=headers)
